@@ -632,6 +632,18 @@ var defaultOptions = {
       popupOptions: { width: 500, height: 560 }
     },
 
+    twitch: {
+      name: 'twitch',
+      url: '/auth/twitch',
+      authorizationEndpoint: 'https://api.twitch.tv/kraken/oauth2/authorize',
+      redirectUri: window.location.origin,
+      requiredUrlParams: ['scope'],
+      scope: ['user:read:email'],
+      scopeDelimiter: '+',
+      oauthType: '2.0',
+      popupOptions: { width: 500, height: 560 }
+    },
+
     oauth1: {
       name: null,
       url: '/auth/oauth1',

@@ -162,6 +162,21 @@ export default {
       popupOptions: { width: 500, height: 560 }
     },
 
+    youtube: {
+      name: 'youtube',
+      url: '/auth/youtube',
+      authorizationEndpoint: 'https://accounts.google.com/o/oauth2/auth',
+      redirectUri: window.location.origin,
+      requiredUrlParams: ['scope'],
+      optionalUrlParams: ['display'],
+      scope: ['https://www.googleapis.com/auth/youtube'],
+      scopePrefix: 'openid',
+      scopeDelimiter: ' ',
+      display: 'popup',
+      oauthType: '2.0',
+      popupOptions: { width: 452, height: 633 }
+    },
+
     oauth1: {
       name: null,
       url: '/auth/oauth1',

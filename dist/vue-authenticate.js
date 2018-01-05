@@ -655,7 +655,7 @@ var defaultOptions = {
       redirectUri: window.location.origin,
       requiredUrlParams: ['scope'],
       optionalUrlParams: ['display'],
-      scope: ['https://www.googleapis.com/auth/youtube'],
+      scope: ['https://www.googleapis.com/auth/youtube', 'https://www.googleapis.com/auth/userinfo.profile'],
       scopePrefix: 'openid',
       scopeDelimiter: ' ',
       display: 'popup',

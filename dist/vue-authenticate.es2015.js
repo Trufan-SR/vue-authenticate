@@ -648,10 +648,11 @@ var defaultOptions = {
       authorizationEndpoint: 'https://accounts.google.com/o/oauth2/auth',
       redirectUri: window.location.origin,
       requiredUrlParams: ['scope'],
-      optionalUrlParams: ['display'],
+      optionalUrlParams: ['display', 'access_type'],
       scope: ['https://www.googleapis.com/auth/youtube', 'https://www.googleapis.com/auth/userinfo.email'],
       scopePrefix: 'openid',
       scopeDelimiter: ' ',
+      accessType: 'offline',
       display: 'popup',
       oauthType: '2.0',
       popupOptions: { width: 452, height: 633 }

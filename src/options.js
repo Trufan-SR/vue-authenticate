@@ -178,6 +178,18 @@ export default {
       popupOptions: { width: 452, height: 633 }
     },
 
+    streamlabs: {
+      name: 'streamlabs',
+      url: '/auth/streamlabs',
+      authorizationEndpoint: 'https://streamlabs.com/api/v1.0/authorize',
+      redirectUri: window.location.origin,
+      requiredUrlParams: ['scope'],
+      scope: ['donations.create', 'donations.read'],
+      scopeDelimiter: ' ',
+      oauthType: '2.0',
+      popupOptions: { width: 500, height: 560 }
+    },
+
     oauth1: {
       name: null,
       url: '/auth/oauth1',

@@ -673,7 +673,7 @@ var defaultOptions = {
       scope: ['donations.create', 'donations.read'],
       scopeDelimiter: ' ',
       oauthType: '2.0',
-      popupOptions: { width: 500, height: 560 }
+      popupOptions: { width: 1020, height: 700 }
     },
 
     oauth1: {

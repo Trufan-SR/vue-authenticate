@@ -190,6 +190,15 @@ export default {
       popupOptions: { width: 1020, height: 700 }
     },
 
+    streamtip: {
+      name: 'streamtip',
+      url: '/auth/streamtip',
+      authorizationEndpoint: 'https://streamtip.com/api/oauth2/authorize',
+      redirectUri: window.location.origin,
+      oauthType: '2.0',
+      popupOptions: { width: 1020, height: 700 }
+    },
+
     oauth1: {
       name: null,
       url: '/auth/oauth1',

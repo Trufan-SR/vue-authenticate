@@ -1426,7 +1426,7 @@ VueAuthenticate.prototype.authenticate = function authenticate (provider, userDa
       if (this$1.isAuthenticated()) {
         return resolve(response)
       } else {
-        return reject(new Error('Authentication failed'))
+        return reject(response)
       }
     }).catch(function (err) { return reject(err); })
   })

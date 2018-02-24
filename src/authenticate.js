@@ -224,7 +224,7 @@ export default class VueAuthenticate {
         if (this.isAuthenticated()) {
           return resolve(response)
         } else {
-          return reject(new Error('Authentication failed'))
+          return reject(response)
         }
       }).catch(err => reject(err))
     })

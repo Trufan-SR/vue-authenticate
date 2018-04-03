@@ -199,6 +199,17 @@ export default {
       popupOptions: { width: 1020, height: 700 }
     },
 
+    stripe: {
+      name: 'stripe',
+      url: '/auth/stripe',
+      authorizationEndpoint: 'https://connect.stripe.com/oauth/authorize',
+      redirectUri: window.location.origin,
+      requiredUrlParams: ['response_type', 'client_id', 'scope'],
+      display: 'popup',
+      oauthType: '2.0',
+      popupOptions: { width: 500, height: 560 }
+    },
+    
     oauth1: {
       name: null,
       url: '/auth/oauth1',

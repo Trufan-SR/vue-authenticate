@@ -209,6 +209,16 @@ export default {
       oauthType: '2.0',
       popupOptions: { width: 500, height: 560 }
     },
+
+    mixer: {
+      name: 'mixer',
+      url: '/auth/mixer',
+      authorizationEndpoint: 'https://mixer.com/oauth/authorize',
+      redirectUri: window.location.origin,
+      display: 'popup',
+      oauthType: '2.0',
+      popupOptions: { width: 500, height: 560 }
+    },
     
     oauth1: {
       name: null,

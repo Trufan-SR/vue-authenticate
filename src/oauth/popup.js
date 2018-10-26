@@ -56,27 +56,27 @@ export default class OAuthPopup {
         try {
           const popupWindowPath = getFullUrlPath(this.popup.location)
 
-          // if (popupWindowPath === redirectUriPath) {
-          //   if (this.popup.location.search || this.popup.location.hash) {
-          //     const query = parseQueryString(this.popup.location.search.substring(1).replace(/\/$/, ''));
-          //     const hash = parseQueryString(this.popup.location.hash.substring(1).replace(/[\/$]/, ''));
-          //     let params = objectExtend({}, query);
-          //     params = objectExtend(params, hash)
+          if (popupWindowPath === redirectUriPath) {
+            if (this.popup.location.search || this.popup.location.hash) {
+              const query = parseQueryString(this.popup.location.search.substring(1).replace(/\/$/, ''));
+              const hash = parseQueryString(this.popup.location.hash.substring(1).replace(/[\/$]/, ''));
+              let params = objectExtend({}, query);
+              params = objectExtend(params, hash)
 
-          //     if (params.error) {
-          //       reject(new Error(params.error));
-          //     } else {
-          //       resolve(params);
-          //     }
-          //   } else {
-          //     reject(new Error('OAuth redirect has occurred but no query or hash parameters were found.'))
-          //   }
+              if (params.error) {
+                reject(new Error(params.error));
+              } else {
+                resolve(params);
+              }
+            } else {
+              reject(new Error('OAuth redirect has occurred but no query or hash parameters were found.'))
+            }
 
-          //   clearInterval(poolingInterval)
-          //   poolingInterval = null
+            clearInterval(poolingInterval)
+            poolingInterval = null
             
-          //   this.popup.close()
-          // }
+            this.popup.close()
+          }
         } catch(e) {
           // Ignore DOMException: Blocked a frame with origin from accessing a cross-origin frame.
         }

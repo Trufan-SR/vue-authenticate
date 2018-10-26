@@ -31,9 +31,9 @@ export default class OAuth {
    */
   init(userData) {
     if(isIosInAppBrowser()) {
-      this.oauthPopup = new OAuthPopup('about:blank', this.providerConfig.name, this.providerConfig.popupOptions)
-    } else {
       this.oauthPopup = new OAuthPopup('/oauth/twitter', this.providerConfig.name, this.providerConfig.popupOptions)
+    } else {
+      this.oauthPopup = new OAuthPopup('about:blank', this.providerConfig.name, this.providerConfig.popupOptions)
     }
 
     if (window && !window['cordova']) {

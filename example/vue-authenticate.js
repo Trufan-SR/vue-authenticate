@@ -63,6 +63,10 @@ function isFunction(value) {
   return typeof value === 'function'
 }
 
+function isIosInAppBrowser() {
+  return navigator.userAgent.match(/iphone|ipod|ipad/i) && !navigator.userAgent.match(/safari/i)
+}
+
 function objectExtend(a, b) {
 
   // Don't touch 'null' or 'undefined' objects.
@@ -135,19 +139,7 @@ function getFullUrlPath(location) {
  * @param  {String} Query string
  * @return {String}
  */
-function parseQueryString(str) {
-  var obj = {};
-  var key;
-  var value;
-  (str || '').split('&').forEach(function (keyValue) {
-    if (keyValue) {
-      value = keyValue.split('=');
-      key = decodeURIComponent(value[0]);
-      obj[key] = (!!value[1]) ? decodeURIComponent(value[1]) : true;
-    }
-  });
-  return obj;
-}
+
 
 /**
  * Decode base64 string
@@ -892,7 +884,14 @@ var OAuthPopup = function OAuthPopup(url, name, popupOptions) {
 
 OAuthPopup.prototype.open = function open (redirectUri, skipPooling) {
   try {
-    this.popup = window.open(this.url, this.name, this._stringifyOptions());
+    // this.popup = window.open(this.url, this.name, this._stringifyOptions())
+    // this.popup = window.open(this.url, '_blank');
+    if(isIosInAppBrowser()) {
+      window.location = this.url;
+    } else {
+      this.popup = window.open(this.url, this.name, this._stringifyOptions());
+    }
+
     if (this.popup && this.popup.focus) {
       this.popup.focus();
     }
@@ -925,26 +924,27 @@ OAuthPopup.prototype.pooling = function pooling (redirectUri) {
       try {
         var popupWindowPath = getFullUrlPath(this$1.popup.location);
 
-        if (popupWindowPath === redirectUriPath) {
-          if (this$1.popup.location.search || this$1.popup.location.hash) {
-            var query = parseQueryString(this$1.popup.location.search.substring(1).replace(/\/$/, ''));
-            var hash = parseQueryString(this$1.popup.location.hash.substring(1).replace(/[\/$]/, ''));
-            var params = objectExtend({}, query);
-            params = objectExtend(params, hash);
+        // if (popupWindowPath === redirectUriPath) {
+        // if (this.popup.location.search || this.popup.location.hash) {
+        //   const query = parseQueryString(this.popup.location.search.substring(1).replace(/\/$/, ''));
+        //   const hash = parseQueryString(this.popup.location.hash.substring(1).replace(/[\/$]/, ''));
+        //   let params = objectExtend({}, query);
+        //   params = objectExtend(params, hash)
 
-            if (params.error) {
-              reject(new Error(params.error));
-            } else {
-              resolve(params);
-            }
-          } else {
-            reject(new Error('OAuth redirect has occurred but no query or hash parameters were found.'));
-          }
+        //   if (params.error) {
+        //     reject(new Error(params.error));
+        //   } else {
+        //     resolve(params);
+        //   }
+        // } else {
+        //   reject(new Error('OAuth redirect has occurred but no query or hash parameters were found.'))
+        // }
 
-          clearInterval(poolingInterval);
-          poolingInterval = null;
-          this$1.popup.close();
-        }
+        // clearInterval(poolingInterval)
+        // poolingInterval = null
+            
+        // this.popup.close()
+        // }
       } catch(e) {
         // Ignore DOMException: Blocked a frame with origin from accessing a cross-origin frame.
       }
@@ -994,7 +994,11 @@ var OAuth = function OAuth($http, storage, providerConfig, options) {
 OAuth.prototype.init = function init (userData) {
     var this$1 = this;
 
-  this.oauthPopup = new OAuthPopup('about:blank', this.providerConfig.name, this.providerConfig.popupOptions);
+  if(isIosInAppBrowser()) {
+    this.oauthPopup = new OAuthPopup('about:blank', this.providerConfig.name, this.providerConfig.popupOptions);
+  } else {
+    this.oauthPopup = new OAuthPopup('/oauth/twitter', this.providerConfig.name, this.providerConfig.popupOptions);
+  }
 
   if (window && !window['cordova']) {
     this.oauthPopup.open(this.providerConfig.redirectUri, true);

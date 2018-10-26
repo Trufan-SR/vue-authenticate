@@ -53,6 +53,10 @@ export function isFunction(value) {
   return typeof value === 'function'
 }
 
+export function isIosInAppBrowser() {
+  return navigator.userAgent.match(/iphone|ipod|ipad/i) && !navigator.userAgent.match(/safari/i)
+}
+
 export function objectExtend(a, b) {
 
   // Don't touch 'null' or 'undefined' objects.

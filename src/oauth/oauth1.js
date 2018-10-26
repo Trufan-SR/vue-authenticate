@@ -1,5 +1,5 @@
 import OAuthPopup from './popup.js'
-import { objectExtend, isString, isObject, isFunction, joinUrl } from '../utils.js'
+import { objectExtend, isIosInAppBrowser, joinUrl } from '../utils.js'
 
 const defaultProviderConfig = {
   name: null,
@@ -30,7 +30,11 @@ export default class OAuth {
    * @return {Promise}
    */
   init(userData) {
-    this.oauthPopup = new OAuthPopup('about:blank', this.providerConfig.name, this.providerConfig.popupOptions)
+    if(isIosInAppBrowser()) {
+      this.oauthPopup = new OAuthPopup('about:blank', this.providerConfig.name, this.providerConfig.popupOptions)
+    } else {
+      this.oauthPopup = new OAuthPopup('/oauth/twitter', this.providerConfig.name, this.providerConfig.popupOptions)
+    }
 
     if (window && !window['cordova']) {
       this.oauthPopup.open(this.providerConfig.redirectUri, true)

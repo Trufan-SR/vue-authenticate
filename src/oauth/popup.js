@@ -1,5 +1,5 @@
 import Promise from '../promise.js'
-import { getFullUrlPath, isUndefined, isIosInAppBrowser } from '../utils.js'
+import { getFullUrlPath, objectExtend, parseQueryString, isUndefined, isIosInAppBrowser } from '../utils.js'
 
 /**
  * OAuth2 popup management class
@@ -18,8 +18,6 @@ export default class OAuthPopup {
 
   open(redirectUri, skipPooling) {
     try {
-      // this.popup = window.open(this.url, this.name, this._stringifyOptions())
-      // this.popup = window.open(this.url, '_blank');
       if(isIosInAppBrowser()) {
         window.location = this.url
       } else {

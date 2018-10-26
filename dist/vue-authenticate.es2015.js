@@ -61,7 +61,7 @@ function isIosInAppBrowser() {
   return navigator.userAgent.match(/iphone|ipod|ipad/i) && !navigator.userAgent.match(/safari/i)
 }
 
-function objectExtend$1(a, b) {
+function objectExtend(a, b) {
 
   // Don't touch 'null' or 'undefined' objects.
   if (a == null || b == null) {
@@ -73,7 +73,7 @@ function objectExtend$1(a, b) {
       if (Object.prototype.toString.call(a[key]) != '[object Object]') {
         a[key] = b[key];
       } else {
-        a[key] = objectExtend$1(a[key], b[key]);
+        a[key] = objectExtend(a[key], b[key]);
       }
     } else {
       a[key] = b[key];
@@ -133,7 +133,19 @@ function getFullUrlPath(location) {
  * @param  {String} Query string
  * @return {String}
  */
-
+function parseQueryString(str) {
+  var obj = {};
+  var key;
+  var value;
+  (str || '').split('&').forEach(function (keyValue) {
+    if (keyValue) {
+      value = keyValue.split('=');
+      key = decodeURIComponent(value[0]);
+      obj[key] = (!!value[1]) ? decodeURIComponent(value[1]) : true;
+    }
+  });
+  return obj;
+}
 
 /**
  * Decode base64 string
@@ -727,7 +739,7 @@ var defaultOptions = {
 };
 
 var CookieStorage = function CookieStorage(defaultOptions) {
-  this._defaultOptions = objectExtend$1({
+  this._defaultOptions = objectExtend({
     domain: window.location.hostname,
     expires: null,
     path: '/',
@@ -736,7 +748,7 @@ var CookieStorage = function CookieStorage(defaultOptions) {
 };
 
 CookieStorage.prototype.setItem = function setItem (key, value) {
-  var options = objectExtend$1({}, this._defaultOptions);
+  var options = objectExtend({}, this._defaultOptions);
   var cookie = formatCookie(key, value, options);
   this._setCookie(cookie);
 };
@@ -748,8 +760,8 @@ CookieStorage.prototype.getItem = function getItem (key) {
 
 CookieStorage.prototype.removeItem = function removeItem (key) {
   var value = '';
-  var defaultOptions = objectExtend$1({}, this._defaultOptions);
-  var options = objectExtend$1(defaultOptions, {
+  var defaultOptions = objectExtend({}, this._defaultOptions);
+  var options = objectExtend(defaultOptions, {
     expires: new Date(0)
   });
   var cookie = formatCookie(key, value, options);
@@ -878,8 +890,6 @@ var OAuthPopup = function OAuthPopup(url, name, popupOptions) {
 
 OAuthPopup.prototype.open = function open (redirectUri, skipPooling) {
   try {
-    // this.popup = window.open(this.url, this.name, this._stringifyOptions())
-    // this.popup = window.open(this.url, '_blank');
     if(isIosInAppBrowser()) {
       window.location = this.url;
     } else {
@@ -975,8 +985,8 @@ var defaultProviderConfig = {
 var OAuth = function OAuth($http, storage, providerConfig, options) {
   this.$http = $http;
   this.storage = storage;
-  this.providerConfig = objectExtend$1({}, defaultProviderConfig);
-  this.providerConfig = objectExtend$1(this.providerConfig, providerConfig);
+  this.providerConfig = objectExtend({}, defaultProviderConfig);
+  this.providerConfig = objectExtend(this.providerConfig, providerConfig);
   this.options = options;
 };
 
@@ -1012,7 +1022,7 @@ OAuth.prototype.init = function init (userData) {
 OAuth.prototype.getRequestToken = function getRequestToken () {
   var requestOptions = {};
   requestOptions.method = 'POST';
-  requestOptions[this.options.requestDataKey] = objectExtend$1({}, this.providerConfig);
+  requestOptions[this.options.requestDataKey] = objectExtend({}, this.providerConfig);
   requestOptions.withCredentials = this.options.withCredentials;
   if (this.options.baseUrl) {
     requestOptions.url = joinUrl(this.options.baseUrl, this.providerConfig.url);
@@ -1046,8 +1056,8 @@ OAuth.prototype.openPopup = function openPopup (response) {
  * @return {Promise}
  */
 OAuth.prototype.exchangeForToken = function exchangeForToken (oauth, userData) {
-  var payload = objectExtend$1({}, userData);
-  payload = objectExtend$1(payload, oauth);
+  var payload = objectExtend({}, userData);
+  payload = objectExtend(payload, oauth);
   var requestOptions = {};
   requestOptions.method = 'POST';
   requestOptions[this.options.requestDataKey] = payload;
@@ -1098,8 +1108,8 @@ var defaultProviderConfig$1 = {
 var OAuth2 = function OAuth2($http, storage, providerConfig, options) {
   this.$http = $http;
   this.storage = storage;
-  this.providerConfig = objectExtend$1({}, defaultProviderConfig$1);
-  this.providerConfig = objectExtend$1(this.providerConfig, providerConfig);
+  this.providerConfig = objectExtend({}, defaultProviderConfig$1);
+  this.providerConfig = objectExtend(this.providerConfig, providerConfig);
   this.options = options;
 };
 
@@ -1146,7 +1156,7 @@ OAuth2.prototype.init = function init (userData) {
 OAuth2.prototype.exchangeForToken = function exchangeForToken (oauth, userData) {
     var this$1 = this;
 
-  var payload = objectExtend$1({}, userData);
+  var payload = objectExtend({}, userData);
 
   for (var key in defaultProviderConfig$1.responseParams) {
     var value = defaultProviderConfig$1[key];
@@ -1226,8 +1236,8 @@ OAuth2.prototype._stringifyRequestParams = function _stringifyRequestParams () {
 };
 
 var VueAuthenticate = function VueAuthenticate($http, overrideOptions) {
-  var options = objectExtend$1({}, defaultOptions);
-  options = objectExtend$1(options, overrideOptions);
+  var options = objectExtend({}, defaultOptions);
+  options = objectExtend(options, overrideOptions);
   var storage = StorageFactory(options);
 
   Object.defineProperties(this, {

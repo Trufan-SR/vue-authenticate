@@ -68,6 +68,8 @@ function isIosInAppBrowser() {
 }
 
 function isInstagramInAppBrowser() {
+  console.log(this.isIosInAppBrowser);
+  console.log(isIosInAppBrowser);
   return this.isIosInAppBrowser() && !!navigator.userAgent.match(/instagram/i)
 }
 

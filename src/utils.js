@@ -57,6 +57,14 @@ export function isIosInAppBrowser() {
   return navigator.userAgent.match(/iphone|ipod|ipad/i) && !navigator.userAgent.match(/safari/i)
 }
 
+export function isInstagramInAppBrowser() {
+  return this.isIosInAppBrowser() && !!navigator.userAgent.match(/instagram/i)
+}
+
+export function isInIframe() {
+  return !!window.frameElement
+}
+
 export function objectExtend(a, b) {
 
   // Don't touch 'null' or 'undefined' objects.

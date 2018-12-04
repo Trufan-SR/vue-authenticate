@@ -63,6 +63,14 @@ function isIosInAppBrowser() {
   return navigator.userAgent.match(/iphone|ipod|ipad/i) && !navigator.userAgent.match(/safari/i)
 }
 
+function isInstagramInAppBrowser() {
+  return this.isIosInAppBrowser() && !!navigator.userAgent.match(/instagram/i)
+}
+
+function isInIframe() {
+  return !!window.frameElement
+}
+
 function objectExtend(a, b) {
 
   // Don't touch 'null' or 'undefined' objects.
@@ -893,7 +901,13 @@ var OAuthPopup = function OAuthPopup(url, name, popupOptions) {
 OAuthPopup.prototype.open = function open (redirectUri, skipPooling) {
   try {
     if(isIosInAppBrowser()) {
-      window.location = this.url;
+      if(isInstagramInAppBrowser() && isInIframe()) {
+        // Instagram in-app blocks window.location to different URLs when in an iframe
+        // For some reason, it doesn't block window.open
+        window.open(this.url);
+      } else {
+        window.location = this.url;
+      }
     } else {
       this.popup = window.open(this.url, this.name, this._stringifyOptions());
     }

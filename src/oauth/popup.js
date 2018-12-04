@@ -1,5 +1,13 @@
 import Promise from '../promise.js'
-import { getFullUrlPath, objectExtend, parseQueryString, isUndefined, isIosInAppBrowser } from '../utils.js'
+import { 
+  getFullUrlPath, 
+  objectExtend, 
+  parseQueryString, 
+  isUndefined, 
+  isIosInAppBrowser,
+  isInstagramInAppBrowser,
+  isInIframe
+} from '../utils.js'
 
 /**
  * OAuth2 popup management class
@@ -19,7 +27,13 @@ export default class OAuthPopup {
   open(redirectUri, skipPooling) {
     try {
       if(isIosInAppBrowser()) {
-        window.location = this.url
+        if(isInstagramInAppBrowser() && isInIframe()) {
+          // Instagram in-app blocks window.location to different URLs when in an iframe
+          // For some reason, it doesn't block window.open
+          window.open(this.url)
+        } else {
+          window.location = this.url
+        }
       } else {
         this.popup = window.open(this.url, this.name, this._stringifyOptions())
       }

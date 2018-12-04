@@ -58,9 +58,7 @@ export function isIosInAppBrowser() {
 }
 
 export function isInstagramInAppBrowser() {
-  console.log(this.isIosInAppBrowser)
-  console.log(isIosInAppBrowser)
-  return this.isIosInAppBrowser() && !!navigator.userAgent.match(/instagram/i)
+  return isIosInAppBrowser() && !!navigator.userAgent.match(/instagram/i)
 }
 
 export function isInIframe() {

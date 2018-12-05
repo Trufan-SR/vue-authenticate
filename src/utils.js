@@ -57,8 +57,8 @@ export function isIosInAppBrowser() {
   return navigator.userAgent.match(/iphone|ipod|ipad/i) && !navigator.userAgent.match(/safari/i)
 }
 
-export function isInstagramInAppBrowser() {
-  return isIosInAppBrowser() && !!navigator.userAgent.match(/instagram/i)
+export function isLockedDownInAppBrowser() {
+  return isIosInAppBrowser() && (!!navigator.userAgent.match(/instagram/i) || !!navigator.userAgent.match(/fban/i))
 }
 
 export function isInIframe() {

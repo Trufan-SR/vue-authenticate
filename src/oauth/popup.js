@@ -5,7 +5,7 @@ import {
   parseQueryString, 
   isUndefined, 
   isIosInAppBrowser,
-  isInstagramInAppBrowser,
+  isLockedDownInAppBrowser,
   isInIframe
 } from '../utils.js'
 
@@ -27,8 +27,8 @@ export default class OAuthPopup {
   open(redirectUri, skipPooling) {
     try {
       if(isIosInAppBrowser()) {
-        if(isInstagramInAppBrowser() && isInIframe()) {
-          // Instagram in-app blocks window.location to different URLs when in an iframe
+        if(isLockedDownInAppBrowser() && isInIframe()) {
+          // Some in-app browsers block window.location to different URLs when in an iframe
           // For some reason, it doesn't block window.open
           window.open(this.url)
         } else {

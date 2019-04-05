@@ -63,6 +63,12 @@ function isIosInAppBrowser() {
   return navigator.userAgent.match(/iphone|ipod|ipad/i) && !navigator.userAgent.match(/safari/i)
 }
 
+function isFacebookOwnedInAppBrowser() {
+  return !!navigator.userAgent.match(/instagram/i) || 
+    !!navigator.userAgent.match(/fban/i) || 
+    !!navigator.userAgent.match(/fbav/i)
+}
+
 function isLockedDownInAppBrowser() {
   return isIosInAppBrowser() && (!!navigator.userAgent.match(/instagram/i) || !!navigator.userAgent.match(/fban/i))
 }
@@ -900,7 +906,7 @@ var OAuthPopup = function OAuthPopup(url, name, popupOptions) {
 
 OAuthPopup.prototype.open = function open (redirectUri, skipPooling) {
   try {
-    if(isIosInAppBrowser()) {
+    if(isIosInAppBrowser() || isFacebookOwnedInAppBrowser()) {
       if(isLockedDownInAppBrowser() && isInIframe()) {
         // Some in-app browsers block window.location to different URLs when in an iframe
         // For some reason, it doesn't block window.open

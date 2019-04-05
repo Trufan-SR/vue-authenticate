@@ -6,6 +6,7 @@ import {
   isUndefined, 
   isIosInAppBrowser,
   isLockedDownInAppBrowser,
+  isFacebookOwnedInAppBrowser,
   isInIframe
 } from '../utils.js'
 
@@ -26,7 +27,7 @@ export default class OAuthPopup {
 
   open(redirectUri, skipPooling) {
     try {
-      if(isIosInAppBrowser()) {
+      if(isIosInAppBrowser() || isFacebookOwnedInAppBrowser()) {
         if(isLockedDownInAppBrowser() && isInIframe()) {
           // Some in-app browsers block window.location to different URLs when in an iframe
           // For some reason, it doesn't block window.open

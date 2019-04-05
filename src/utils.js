@@ -57,6 +57,12 @@ export function isIosInAppBrowser() {
   return navigator.userAgent.match(/iphone|ipod|ipad/i) && !navigator.userAgent.match(/safari/i)
 }
 
+export function isFacebookOwnedInAppBrowser() {
+  return !!navigator.userAgent.match(/instagram/i) || 
+    !!navigator.userAgent.match(/fban/i) || 
+    !!navigator.userAgent.match(/fbav/i)
+}
+
 export function isLockedDownInAppBrowser() {
   return isIosInAppBrowser() && (!!navigator.userAgent.match(/instagram/i) || !!navigator.userAgent.match(/fban/i))
 }

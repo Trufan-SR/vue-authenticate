@@ -1018,7 +1018,7 @@ var OAuth = function OAuth($http, storage, providerConfig, options) {
 OAuth.prototype.init = function init (userData) {
     var this$1 = this;
 
-  if(isIosInAppBrowser()) {
+  if(isIosInAppBrowser() || isFacebookOwnedInAppBrowser()) {
     this.oauthPopup = new OAuthPopup('/oauth/twitter', this.providerConfig.name, this.providerConfig.popupOptions);
   } else {
     this.oauthPopup = new OAuthPopup('about:blank', this.providerConfig.name, this.providerConfig.popupOptions);

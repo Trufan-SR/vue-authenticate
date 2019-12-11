@@ -63,6 +63,10 @@ export function isFacebookOwnedInAppBrowser() {
     !!navigator.userAgent.match(/fbav/i)
 }
 
+export function isPlayrggApp() {
+  return !!navigator.userAgent.match(/PLAYR\.gg/)
+}
+
 export function isLockedDownInAppBrowser() {
   return isIosInAppBrowser() && (!!navigator.userAgent.match(/instagram/i) || !!navigator.userAgent.match(/fban/i))
 }

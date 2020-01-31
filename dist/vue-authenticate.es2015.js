@@ -251,6 +251,7 @@ function formatOptions(options) {
   var domain = options.domain;
   var expires = options.expires;
   var secure = options.secure;
+  var samesite = options.samesite;
   return [
     typeof path === 'undefined' || path === null
       ? '' : ';path=' + path,
@@ -259,8 +260,9 @@ function formatOptions(options) {
     typeof expires === 'undefined' || expires === null
       ? '' : ';expires=' + expires.toUTCString(),
     typeof secure === 'undefined' || secure === null || secure === false
-      ? '' : ';secure'
-  ].join('');
+      ? '' : ';secure',
+    typeof samesite === 'undefined' || samesite === null
+      ? '' : ';samesite=' + samesite ].join('');
 }
 
 function formatCookie(key, value, options) {

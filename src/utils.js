@@ -241,7 +241,7 @@ export function parseCookies(str) {
 };
 
 export function formatOptions(options) {
-  const { path, domain, expires, secure } = options;
+  const { path, domain, expires, secure, samesite } = options;
   return [
     typeof path === 'undefined' || path === null
       ? '' : ';path=' + path,
@@ -250,7 +250,9 @@ export function formatOptions(options) {
     typeof expires === 'undefined' || expires === null
       ? '' : ';expires=' + expires.toUTCString(),
     typeof secure === 'undefined' || secure === null || secure === false
-      ? '' : ';secure'
+      ? '' : ';secure',
+    typeof samesite === 'undefined' || samesite === null
+      ? '' : ';samesite=' + samesite,
   ].join('');
 };
 

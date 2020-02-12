@@ -7,6 +7,7 @@ import {
   isIosInAppBrowser,
   isLockedDownInAppBrowser,
   isFacebookOwnedInAppBrowser,
+  isPlayrggApp,
   isInIframe
 } from '../utils.js'
 
@@ -27,8 +28,8 @@ export default class OAuthPopup {
 
   open(redirectUri, skipPooling) {
     try {
-      if(isIosInAppBrowser() || isFacebookOwnedInAppBrowser()) {
-        if(isLockedDownInAppBrowser() && isInIframe()) {
+      if(isIosInAppBrowser() || isFacebookOwnedInAppBrowser() || isPlayrggApp()) {
+        if(isLockedDownInAppBrowser() && isInIframe() && !isPlayrggApp()) {
           // Some in-app browsers block window.location to different URLs when in an iframe
           // For some reason, it doesn't block window.open
           window.open(this.url)

@@ -10,7 +10,8 @@ class CookieStorage {
       domain: window.location.hostname,
       expires: null,
       path: '/',
-      secure: false
+      secure: false,
+      sameSite: 'Lax'
     }, defaultOptions);
   }
 

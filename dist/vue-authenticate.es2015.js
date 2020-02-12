@@ -255,6 +255,7 @@ function formatOptions(options) {
   var domain = options.domain;
   var expires = options.expires;
   var secure = options.secure;
+  var sameSite = options.sameSite;
   return [
     typeof path === 'undefined' || path === null
       ? '' : ';path=' + path,
@@ -263,7 +264,9 @@ function formatOptions(options) {
     typeof expires === 'undefined' || expires === null
       ? '' : ';expires=' + expires.toUTCString(),
     typeof secure === 'undefined' || secure === null || secure === false
-      ? '' : ';secure'
+      ? '' : ';secure',
+    typeof sameSite === 'undefined' || sameSite === null
+      ? '' : ';samesite=' + sameSite
   ].join('');
 }
 
@@ -761,7 +764,8 @@ var CookieStorage = function CookieStorage(defaultOptions) {
     domain: window.location.hostname,
     expires: null,
     path: '/',
-    secure: false
+    secure: false,
+    sameSite: 'Lax'
   }, defaultOptions);
 };
 

@@ -63,6 +63,28 @@ function isFunction(value) {
   return typeof value === 'function'
 }
 
+function isIosInAppBrowser() {
+  return navigator.userAgent.match(/iphone|ipod|ipad/i) && !navigator.userAgent.match(/safari/i)
+}
+
+function isFacebookOwnedInAppBrowser() {
+  return !!navigator.userAgent.match(/instagram/i) || 
+    !!navigator.userAgent.match(/fban/i) || 
+    !!navigator.userAgent.match(/fbav/i)
+}
+
+function isPlayrggApp() {
+  return !!navigator.userAgent.match(/PLAYR\.gg/)
+}
+
+function isLockedDownInAppBrowser() {
+  return isIosInAppBrowser() && (!!navigator.userAgent.match(/instagram/i) || !!navigator.userAgent.match(/fban/i))
+}
+
+function isInIframe() {
+  return !!window.frameElement
+}
+
 function objectExtend(a, b) {
 
   // Don't touch 'null' or 'undefined' objects.
@@ -239,6 +261,7 @@ function formatOptions(options) {
   var domain = options.domain;
   var expires = options.expires;
   var secure = options.secure;
+  var sameSite = options.sameSite;
   return [
     typeof path === 'undefined' || path === null
       ? '' : ';path=' + path,
@@ -247,7 +270,9 @@ function formatOptions(options) {
     typeof expires === 'undefined' || expires === null
       ? '' : ';expires=' + expires.toUTCString(),
     typeof secure === 'undefined' || secure === null || secure === false
-      ? '' : ';secure'
+      ? '' : ';secure',
+    typeof sameSite === 'undefined' || sameSite === null
+      ? '' : ';samesite=' + sameSite
   ].join('');
 }
 
@@ -540,7 +565,7 @@ var defaultOptions = {
     facebook: {
       name: 'facebook',
       url: '/auth/facebook',
-      authorizationEndpoint: 'https://www.facebook.com/v2.5/dialog/oauth',
+      authorizationEndpoint: 'https://www.facebook.com/v2.11/dialog/oauth',
       redirectUri: window.location.origin + '/',
       requiredUrlParams: ['display', 'scope'],
       scope: ['email'],
@@ -636,6 +661,76 @@ var defaultOptions = {
       popupOptions: { width: 500, height: 560 }
     },
 
+    twitch: {
+      name: 'twitch',
+      url: '/auth/twitch',
+      authorizationEndpoint: 'https://api.twitch.tv/kraken/oauth2/authorize',
+      redirectUri: window.location.origin,
+      requiredUrlParams: ['scope'],
+      scope: ['user:read:email', 'user_follows_edit', 'user_subscriptions'],
+      scopeDelimiter: '+',
+      oauthType: '2.0',
+      popupOptions: { width: 500, height: 560 }
+    },
+
+    youtube: {
+      name: 'youtube',
+      url: '/auth/youtube',
+      authorizationEndpoint: 'https://accounts.google.com/o/oauth2/auth',
+      redirectUri: window.location.origin,
+      requiredUrlParams: ['scope'],
+      optionalUrlParams: ['display', 'access_type'],
+      scope: ['https://www.googleapis.com/auth/youtube', 'https://www.googleapis.com/auth/userinfo.email'],
+      scopePrefix: 'openid',
+      scopeDelimiter: ' ',
+      accessType: 'offline',
+      display: 'popup',
+      oauthType: '2.0',
+      popupOptions: { width: 452, height: 633 }
+    },
+
+    streamlabs: {
+      name: 'streamlabs',
+      url: '/auth/streamlabs',
+      authorizationEndpoint: 'https://streamlabs.com/api/v1.0/authorize',
+      redirectUri: window.location.origin,
+      requiredUrlParams: ['scope'],
+      scope: ['donations.create', 'donations.read'],
+      scopeDelimiter: ' ',
+      oauthType: '2.0',
+      popupOptions: { width: 1020, height: 700 }
+    },
+
+    streamtip: {
+      name: 'streamtip',
+      url: '/auth/streamtip',
+      authorizationEndpoint: 'https://streamtip.com/api/oauth2/authorize',
+      redirectUri: window.location.origin,
+      oauthType: '2.0',
+      popupOptions: { width: 1020, height: 700 }
+    },
+
+    stripe: {
+      name: 'stripe',
+      url: '/auth/stripe',
+      authorizationEndpoint: 'https://connect.stripe.com/oauth/authorize',
+      redirectUri: window.location.origin,
+      requiredUrlParams: ['response_type', 'client_id', 'scope'],
+      display: 'popup',
+      oauthType: '2.0',
+      popupOptions: { width: 500, height: 560 }
+    },
+
+    mixer: {
+      name: 'mixer',
+      url: '/auth/mixer',
+      authorizationEndpoint: 'https://mixer.com/oauth/authorize',
+      redirectUri: window.location.origin,
+      display: 'popup',
+      oauthType: '2.0',
+      popupOptions: { width: 500, height: 560 }
+    },
+    
     oauth1: {
       name: null,
       url: '/auth/oauth1',
@@ -675,7 +770,8 @@ var CookieStorage = function CookieStorage(defaultOptions) {
     domain: window.location.hostname,
     expires: null,
     path: '/',
-    secure: false
+    secure: false,
+    sameSite: 'Lax'
   }, defaultOptions);
 };
 
@@ -822,7 +918,18 @@ var OAuthPopup = function OAuthPopup(url, name, popupOptions) {
 
 OAuthPopup.prototype.open = function open (redirectUri, skipPooling) {
   try {
-    this.popup = window.open(this.url, this.name, this._stringifyOptions());
+    if(isIosInAppBrowser() || isFacebookOwnedInAppBrowser() || isPlayrggApp()) {
+      if(isLockedDownInAppBrowser() && isInIframe() && !isPlayrggApp()) {
+        // Some in-app browsers block window.location to different URLs when in an iframe
+        // For some reason, it doesn't block window.open
+        window.open(this.url);
+      } else {
+        window.location = this.url;
+      }
+    } else {
+      this.popup = window.open(this.url, this.name, this._stringifyOptions());
+    }
+
     if (this.popup && this.popup.focus) {
       this.popup.focus();
     }
@@ -873,6 +980,7 @@ OAuthPopup.prototype.pooling = function pooling (redirectUri) {
 
           clearInterval(poolingInterval);
           poolingInterval = null;
+            
           this$1.popup.close();
         }
       } catch(e) {
@@ -924,7 +1032,11 @@ var OAuth = function OAuth($http, storage, providerConfig, options) {
 OAuth.prototype.init = function init (userData) {
     var this$1 = this;
 
-  this.oauthPopup = new OAuthPopup('about:blank', this.providerConfig.name, this.providerConfig.popupOptions);
+  if(isIosInAppBrowser() || isFacebookOwnedInAppBrowser()) {
+    this.oauthPopup = new OAuthPopup('/oauth/twitter', this.providerConfig.name, this.providerConfig.popupOptions);
+  } else {
+    this.oauthPopup = new OAuthPopup('about:blank', this.providerConfig.name, this.providerConfig.popupOptions);
+  }
 
   if (window && !window['cordova']) {
     this.oauthPopup.open(this.providerConfig.redirectUri, true);
@@ -1383,7 +1495,7 @@ VueAuthenticate.prototype.authenticate = function authenticate (provider, userDa
       if (this$1.isAuthenticated()) {
         return resolve(response)
       } else {
-        return reject(new Error('Authentication failed'))
+        return reject(response)
       }
     }).catch(function (err) { return reject(err); })
   })

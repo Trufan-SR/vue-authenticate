@@ -53,6 +53,28 @@ export function isFunction(value) {
   return typeof value === 'function'
 }
 
+export function isIosInAppBrowser() {
+  return navigator.userAgent.match(/iphone|ipod|ipad/i) && !navigator.userAgent.match(/safari/i)
+}
+
+export function isFacebookOwnedInAppBrowser() {
+  return !!navigator.userAgent.match(/instagram/i) || 
+    !!navigator.userAgent.match(/fban/i) || 
+    !!navigator.userAgent.match(/fbav/i)
+}
+
+export function isPlayrggApp() {
+  return !!navigator.userAgent.match(/PLAYR\.gg/)
+}
+
+export function isLockedDownInAppBrowser() {
+  return isIosInAppBrowser() && (!!navigator.userAgent.match(/instagram/i) || !!navigator.userAgent.match(/fban/i))
+}
+
+export function isInIframe() {
+  return !!window.frameElement
+}
+
 export function objectExtend(a, b) {
 
   // Don't touch 'null' or 'undefined' objects.
@@ -223,7 +245,7 @@ export function parseCookies(str) {
 };
 
 export function formatOptions(options) {
-  const { path, domain, expires, secure } = options;
+  const { path, domain, expires, secure, sameSite } = options;
   return [
     typeof path === 'undefined' || path === null
       ? '' : ';path=' + path,
@@ -232,7 +254,9 @@ export function formatOptions(options) {
     typeof expires === 'undefined' || expires === null
       ? '' : ';expires=' + expires.toUTCString(),
     typeof secure === 'undefined' || secure === null || secure === false
-      ? '' : ';secure'
+      ? '' : ';secure',
+    typeof sameSite === 'undefined' || sameSite === null
+      ? '' : ';samesite=' + sameSite
   ].join('');
 };
 

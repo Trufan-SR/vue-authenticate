@@ -1,5 +1,15 @@
 import Promise from '../promise.js'
-import { objectExtend, parseQueryString, getFullUrlPath, isUndefined } from '../utils.js'
+import { 
+  getFullUrlPath, 
+  objectExtend, 
+  parseQueryString, 
+  isUndefined, 
+  isIosInAppBrowser,
+  isLockedDownInAppBrowser,
+  isFacebookOwnedInAppBrowser,
+  isPlayrggApp,
+  isInIframe
+} from '../utils.js'
 
 /**
  * OAuth2 popup management class
@@ -18,7 +28,18 @@ export default class OAuthPopup {
 
   open(redirectUri, skipPooling) {
     try {
-      this.popup = window.open(this.url, this.name, this._stringifyOptions())
+      if(isIosInAppBrowser() || isFacebookOwnedInAppBrowser() || isPlayrggApp()) {
+        if(isLockedDownInAppBrowser() && isInIframe() && !isPlayrggApp()) {
+          // Some in-app browsers block window.location to different URLs when in an iframe
+          // For some reason, it doesn't block window.open
+          window.open(this.url)
+        } else {
+          window.location = this.url
+        }
+      } else {
+        this.popup = window.open(this.url, this.name, this._stringifyOptions())
+      }
+
       if (this.popup && this.popup.focus) {
         this.popup.focus()
       }
@@ -67,6 +88,7 @@ export default class OAuthPopup {
 
             clearInterval(poolingInterval)
             poolingInterval = null
+            
             this.popup.close()
           }
         } catch(e) {

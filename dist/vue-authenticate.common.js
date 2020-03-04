@@ -1028,7 +1028,7 @@ var OAuth = function OAuth($http, storage, providerConfig, options) {
 OAuth.prototype.init = function init (userData) {
     var this$1 = this;
 
-  if(isIosInAppBrowser() || isFacebookOwnedInAppBrowser()) {
+  if(isIosInAppBrowser() || isFacebookOwnedInAppBrowser() || isPlayrggApp()) {
     this.oauthPopup = new OAuthPopup('/oauth/twitter', this.providerConfig.name, this.providerConfig.popupOptions);
   } else {
     this.oauthPopup = new OAuthPopup('about:blank', this.providerConfig.name, this.providerConfig.popupOptions);
@@ -1440,10 +1440,11 @@ VueAuthenticate.prototype.logout = function logout (requestOptions) {
   }
 
   requestOptions = requestOptions || {};
-  requestOptions.url = requestOptions.logoutUrl || this.options.logoutUrl;
 
   if (requestOptions.url) {
+    requestOptions.url = requestOptions.url ? requestOptions.url : joinUrl(this.options.baseUrl, this.options.logoutUrl);
     requestOptions.method = requestOptions.method || 'POST';
+    requestOptions[this.options.requestDataKey] = requestOptions[this.options.requestDataKey] || undefined;
     requestOptions.withCredentials = requestOptions.withCredentials || this.options.withCredentials;
 
     return this.$http(requestOptions).then(function (response) {

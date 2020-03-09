@@ -1,5 +1,5 @@
 import OAuthPopup from './popup.js'
-import { objectExtend, isIosInAppBrowser, isFacebookOwnedInAppBrowser, joinUrl } from '../utils.js'
+import { objectExtend, isIosInAppBrowser, isFacebookOwnedInAppBrowser, joinUrl, isPlayrggApp } from '../utils.js'
 
 const defaultProviderConfig = {
   name: null,
@@ -30,7 +30,7 @@ export default class OAuth {
    * @return {Promise}
    */
   init(userData) {
-    if(isIosInAppBrowser() || isFacebookOwnedInAppBrowser()) {
+    if(isIosInAppBrowser() || isFacebookOwnedInAppBrowser() || isPlayrggApp()) {
       this.oauthPopup = new OAuthPopup('/oauth/twitter', this.providerConfig.name, this.providerConfig.popupOptions)
     } else {
       this.oauthPopup = new OAuthPopup('about:blank', this.providerConfig.name, this.providerConfig.popupOptions)

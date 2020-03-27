@@ -1086,6 +1086,10 @@ OAuth.prototype.openPopup = function openPopup (response) {
  * @return {Promise}
  */
 OAuth.prototype.exchangeForToken = function exchangeForToken (oauth, userData) {
+  if (oauth["denied"]) {
+    return Promise.reject(new Error('denied'));
+  }
+    
   var payload = objectExtend({}, userData);
   payload = objectExtend(payload, oauth);
   var requestOptions = {};

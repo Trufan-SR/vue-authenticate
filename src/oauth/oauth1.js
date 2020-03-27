@@ -88,6 +88,10 @@ export default class OAuth {
    * @return {Promise}
    */
   exchangeForToken(oauth, userData) {
+    if (oauth["denied"]) {
+      return Promise.reject(new Error('denied'));
+    }
+    
     let payload = objectExtend({}, userData)
     payload = objectExtend(payload, oauth)
     let requestOptions = {}

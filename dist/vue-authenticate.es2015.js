@@ -62,8 +62,8 @@ function isIosInAppBrowser() {
 }
 
 function isFacebookOwnedInAppBrowser() {
-  return !!navigator.userAgent.match(/instagram/i) || 
-    !!navigator.userAgent.match(/fban/i) || 
+  return !!navigator.userAgent.match(/instagram/i) ||
+    !!navigator.userAgent.match(/fban/i) ||
     !!navigator.userAgent.match(/fbav/i)
 }
 
@@ -103,10 +103,10 @@ function objectExtend(a, b) {
 
 /**
  * Assemble url from two segments
- * 
+ *
  * @author Sahat Yalkabov <https://github.com/sahat>
  * @copyright Method taken from https://github.com/sahat/satellizer
- * 
+ *
  * @param  {String} baseUrl Base url
  * @param  {String} url     URI
  * @return {String}
@@ -128,10 +128,10 @@ function joinUrl(baseUrl, url) {
 
 /**
  * Get full path based on current location
- * 
+ *
  * @author Sahat Yalkabov <https://github.com/sahat>
  * @copyright Method taken from https://github.com/sahat/satellizer
- * 
+ *
  * @param  {Location} location
  * @return {String}
  */
@@ -144,10 +144,10 @@ function getFullUrlPath(location) {
 
 /**
  * Parse query string variables
- * 
+ *
  * @author Sahat Yalkabov <https://github.com/sahat>
  * @copyright Method taken from https://github.com/sahat/satellizer
- * 
+ *
  * @param  {String} Query string
  * @return {String}
  */
@@ -169,7 +169,7 @@ function parseQueryString(str) {
  * Decode base64 string
  * @author Sahat Yalkabov <https://github.com/sahat>
  * @copyright Method taken from https://github.com/sahat/satellizer
- * 
+ *
  * @param  {String} str base64 encoded string
  * @return {Object}
  */
@@ -724,7 +724,7 @@ var defaultOptions = {
       oauthType: '2.0',
       popupOptions: { width: 500, height: 560 }
     },
-    
+
     oauth1: {
       name: null,
       url: '/auth/oauth1',
@@ -885,11 +885,11 @@ function StorageFactory(options) {
         window.sessionStorage.removeItem('testKey');
         return new LocalStorage$2(options.storageNamespace)
       } catch (e) {}
-      
+
     case 'cookieStorage':
       return new CookieStorage(options.cookieStorage);
 
-    case 'memoryStorage': 
+    case 'memoryStorage':
     default:
       return new MemoryStorage(options.storageNamespace)
       break;
@@ -898,9 +898,9 @@ function StorageFactory(options) {
 
 /**
  * OAuth2 popup management class
- * 
+ *
  * @author Sahat Yalkabov <https://github.com/sahat>
- * @copyright Class mostly taken from https://github.com/sahat/satellizer 
+ * @copyright Class mostly taken from https://github.com/sahat/satellizer
  * and adjusted to fit vue-authenticate library
  */
 var OAuthPopup = function OAuthPopup(url, name, popupOptions) {
@@ -947,6 +947,7 @@ OAuthPopup.prototype.pooling = function pooling (redirectUri) {
     var redirectUriPath = getFullUrlPath(redirectUriParser);
 
     var poolingInterval = setInterval(function () {
+      console.debug('popup: %o', this$1.popup);
       if (!this$1.popup || this$1.popup.closed || this$1.popup.closed === undefined) {
         clearInterval(poolingInterval);
         poolingInterval = null;
@@ -974,7 +975,7 @@ OAuthPopup.prototype.pooling = function pooling (redirectUri) {
 
           clearInterval(poolingInterval);
           poolingInterval = null;
-            
+
           this$1.popup.close();
         }
       } catch(e) {
@@ -1019,7 +1020,7 @@ var OAuth = function OAuth($http, storage, providerConfig, options) {
 };
 
 /**
- * Initialize OAuth1 process 
+ * Initialize OAuth1 process
  * @param{Object} userData User data
  * @return {Promise}
  */
@@ -1087,7 +1088,7 @@ OAuth.prototype.exchangeForToken = function exchangeForToken (oauth, userData) {
   if (oauth["denied"]) {
     return Promise.reject(new Error('denied'));
   }
-    
+
   var payload = objectExtend({}, userData);
   payload = objectExtend(payload, oauth);
   var requestOptions = {};
@@ -1158,7 +1159,7 @@ OAuth2.prototype.init = function init (userData) {
   var url = [this.providerConfig.authorizationEndpoint, this._stringifyRequestParams()].join('?');
 
   this.oauthPopup = new OAuthPopup(url, this.providerConfig.name, this.providerConfig.popupOptions);
-    
+
   return new Promise(function (resolve, reject) {
     this$1.oauthPopup.open(this$1.providerConfig.redirectUri).then(function (response) {
       if (this$1.providerConfig.responseType === 'token' || !this$1.providerConfig.url) {
@@ -1180,7 +1181,7 @@ OAuth2.prototype.init = function init (userData) {
  * Exchange temporary oauth data for access token
  * @author Sahat Yalkabov <https://github.com/sahat>
  * @copyright Method taken from https://github.com/sahat/satellizer
- * 
+ *
  * @param{[type]} oauth  [description]
  * @param{[type]} userData [description]
  * @return {[type]}        [description]
@@ -1228,7 +1229,7 @@ OAuth2.prototype.exchangeForToken = function exchangeForToken (oauth, userData) 
  * Stringify oauth params
  * @author Sahat Yalkabov <https://github.com/sahat>
  * @copyright Method taken from https://github.com/sahat/satellizer
- * 
+ *
  * @return {String}
  */
 OAuth2.prototype._stringifyRequestParams = function _stringifyRequestParams () {
@@ -1356,7 +1357,7 @@ VueAuthenticate.prototype.setToken = function setToken (response) {
   if (response[this.options.responseDataKey]) {
     response = response[this.options.responseDataKey];
   }
-    
+
   var token;
   if (response.access_token) {
     if (isObject(response.access_token) && isObject(response.access_token[this.options.responseDataKey])) {
@@ -1386,7 +1387,7 @@ VueAuthenticate.prototype.getPayload = function getPayload () {
     } catch (e) {}
   }
 };
-  
+
 /**
  * Login user using email and password
  * @param{Object} user         User data
@@ -1460,7 +1461,7 @@ VueAuthenticate.prototype.logout = function logout (requestOptions) {
 
 /**
  * Authenticate user using authentication provider
- * 
+ *
  * @param{String} provider     Provider name
  * @param{Object} userData     User data
  * @param{Object} requestOptions Request options

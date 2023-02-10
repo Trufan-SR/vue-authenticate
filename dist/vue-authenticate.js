@@ -902,11 +902,12 @@ function StorageFactory(options) {
   }
 }
 
+// import Promise from '../promise.js'
 /**
  * OAuth2 popup management class
- * 
+ *
  * @author Sahat Yalkabov <https://github.com/sahat>
- * @copyright Class mostly taken from https://github.com/sahat/satellizer 
+ * @copyright Class mostly taken from https://github.com/sahat/satellizer
  * and adjusted to fit vue-authenticate library
  */
 var OAuthPopup = function OAuthPopup(url, name, popupOptions) {
@@ -935,24 +936,28 @@ OAuthPopup.prototype.open = function open (redirectUri, skipPooling) {
     }
 
     if (skipPooling) {
-      return Promise$1.resolve()
+      return Promise.resolve()
     } else {
       return this.pooling(redirectUri)
     }
   } catch(e) {
-    return Promise$1.reject(new Error('OAuth popup error occurred'))
+    return Promise.reject(new Error('OAuth popup error occurred'))
   }
 };
 
 OAuthPopup.prototype.pooling = function pooling (redirectUri) {
     var this$1 = this;
 
-  return new Promise$1(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     var redirectUriParser = document.createElement('a');
     redirectUriParser.href = redirectUri;
     var redirectUriPath = getFullUrlPath(redirectUriParser);
 
+    console.debug('[VA] redirectUriPath: %o', redirectUriPath);
+
     var poolingInterval = setInterval(function () {
+      console.debug('[VA] popup: %o', this$1.popup);
+
       if (!this$1.popup || this$1.popup.closed || this$1.popup.closed === undefined) {
         clearInterval(poolingInterval);
         poolingInterval = null;
@@ -961,8 +966,11 @@ OAuthPopup.prototype.pooling = function pooling (redirectUri) {
 
       try {
         var popupWindowPath = getFullUrlPath(this$1.popup.location);
+        console.debug('[VA] popupWindowPath: %o', popupWindowPath);
 
         if (popupWindowPath === redirectUriPath) {
+          console.debug('[VA] popup path and redirect path are the same');
+
           if (this$1.popup.location.search || this$1.popup.location.hash) {
             var query = parseQueryString(this$1.popup.location.search.substring(1).replace(/\/$/, ''));
             var hash = parseQueryString(this$1.popup.location.hash.substring(1).replace(/[\/$]/, ''));
@@ -980,10 +988,14 @@ OAuthPopup.prototype.pooling = function pooling (redirectUri) {
 
           clearInterval(poolingInterval);
           poolingInterval = null;
-            
+
+          console.debug('[VA] popup closing');
           this$1.popup.close();
+        } else {
+          console.debug('[VA] poll loop else');
         }
       } catch(e) {
+        console.debug('[VA] poll catch');
         // Ignore DOMException: Blocked a frame with origin from accessing a cross-origin frame.
       }
     }, 250);

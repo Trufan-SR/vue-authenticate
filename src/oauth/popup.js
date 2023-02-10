@@ -1,9 +1,9 @@
-import Promise from '../promise.js'
-import { 
-  getFullUrlPath, 
-  objectExtend, 
-  parseQueryString, 
-  isUndefined, 
+// import Promise from '../promise.js'
+import {
+  getFullUrlPath,
+  objectExtend,
+  parseQueryString,
+  isUndefined,
   isIosInAppBrowser,
   isLockedDownInAppBrowser,
   isFacebookOwnedInAppBrowser,
@@ -13,9 +13,9 @@ import {
 
 /**
  * OAuth2 popup management class
- * 
+ *
  * @author Sahat Yalkabov <https://github.com/sahat>
- * @copyright Class mostly taken from https://github.com/sahat/satellizer 
+ * @copyright Class mostly taken from https://github.com/sahat/satellizer
  * and adjusted to fit vue-authenticate library
  */
 export default class OAuthPopup {
@@ -60,7 +60,11 @@ export default class OAuthPopup {
       redirectUriParser.href = redirectUri
       const redirectUriPath = getFullUrlPath(redirectUriParser)
 
+      console.debug('[VA] redirectUriPath: %o', redirectUriPath)
+
       let poolingInterval = setInterval(() => {
+        console.debug('[VA] popup: %o', this.popup)
+
         if (!this.popup || this.popup.closed || this.popup.closed === undefined) {
           clearInterval(poolingInterval)
           poolingInterval = null
@@ -69,8 +73,11 @@ export default class OAuthPopup {
 
         try {
           const popupWindowPath = getFullUrlPath(this.popup.location)
+          console.debug('[VA] popupWindowPath: %o', popupWindowPath)
 
           if (popupWindowPath === redirectUriPath) {
+            console.debug('[VA] popup path and redirect path are the same')
+
             if (this.popup.location.search || this.popup.location.hash) {
               const query = parseQueryString(this.popup.location.search.substring(1).replace(/\/$/, ''));
               const hash = parseQueryString(this.popup.location.hash.substring(1).replace(/[\/$]/, ''));
@@ -88,10 +95,14 @@ export default class OAuthPopup {
 
             clearInterval(poolingInterval)
             poolingInterval = null
-            
+
+            console.debug('[VA] popup closing')
             this.popup.close()
+          } else {
+            console.debug('[VA] poll loop else')
           }
         } catch(e) {
+          console.debug('[VA] poll catch')
           // Ignore DOMException: Blocked a frame with origin from accessing a cross-origin frame.
         }
       }, 250)

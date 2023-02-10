@@ -946,8 +946,11 @@ OAuthPopup.prototype.pooling = function pooling (redirectUri) {
     redirectUriParser.href = redirectUri;
     var redirectUriPath = getFullUrlPath(redirectUriParser);
 
+    console.debug('[VA] redirectUriPath: %o', redirectUriPath);
+
     var poolingInterval = setInterval(function () {
-      console.debug('popup: %o', this$1.popup);
+      console.debug('[VA] popup: %o', this$1.popup);
+
       if (!this$1.popup || this$1.popup.closed || this$1.popup.closed === undefined) {
         clearInterval(poolingInterval);
         poolingInterval = null;
@@ -956,6 +959,7 @@ OAuthPopup.prototype.pooling = function pooling (redirectUri) {
 
       try {
         var popupWindowPath = getFullUrlPath(this$1.popup.location);
+        console.debug('[VA] popupWindowPath: %o', popupWindowPath);
 
         if (popupWindowPath === redirectUriPath) {
           if (this$1.popup.location.search || this$1.popup.location.hash) {
@@ -976,6 +980,7 @@ OAuthPopup.prototype.pooling = function pooling (redirectUri) {
           clearInterval(poolingInterval);
           poolingInterval = null;
 
+          console.debug('[VA] popup closing');
           this$1.popup.close();
         }
       } catch(e) {

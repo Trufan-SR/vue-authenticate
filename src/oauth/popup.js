@@ -40,6 +40,9 @@ export default class OAuthPopup {
         }
       } else {
         this.popup = window.open(this.url, this.name, this._stringifyOptions())
+        this.popup.window.addEventListener('beforeunload', () => {
+          console.debug('-- popup beforeunload')
+        })
       }
 
       if (this.popup && this.popup.focus) {

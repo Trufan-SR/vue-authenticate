@@ -24,6 +24,8 @@ export default class OAuthPopup {
     this.url = url
     this.name = name
     this.popupOptions = popupOptions
+
+    console.debug('[VA] OAuthPopup constructor: %o | %o | %o', this.url, this.name, this.popupOptions);
   }
 
   open(redirectUri, skipPooling) {
@@ -60,7 +62,7 @@ export default class OAuthPopup {
       redirectUriParser.href = redirectUri
       const redirectUriPath = getFullUrlPath(redirectUriParser)
 
-      console.debug('[VA] redirectUriPath: %o', redirectUriPath)
+      console.debug('[VA] redirectUriPath: %o | %o', redirectUriPath, redirectUri)
 
       let poolingInterval = setInterval(() => {
         console.debug('[VA] popup: %o', this.popup)

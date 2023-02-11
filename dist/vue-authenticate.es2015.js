@@ -1015,15 +1015,15 @@ OAuthPopup.prototype.pooling = function pooling(redirectUri) {
 
     var poolingInterval = setInterval(function () {
       console.log(this$1.popup);
-      if (
-        !this$1.popup ||
-        this$1.popup.closed ||
-        this$1.popup.closed === undefined
-      ) {
-        clearInterval(poolingInterval);
-        poolingInterval = null;
-        reject(new Error("Auth popup window closed"));
-      }
+      // if (
+      //   !this$1.popup ||
+      //   this$1.popup.closed ||
+      //   this$1.popup.closed === undefined
+      // ) {
+      //   clearInterval(poolingInterval);
+      //   poolingInterval = null;
+      //   reject(new Error("Auth popup window closed"));
+      // }
 
       try {
         var popupWindowPath = getFullUrlPath(this$1.popup.location);

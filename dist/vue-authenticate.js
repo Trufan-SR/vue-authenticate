@@ -958,20 +958,22 @@ OAuthPopup.prototype.pooling = function pooling (redirectUri) {
     console.debug('[VA] redirectUriPath: %o | %o', redirectUriPath, redirectUri);
 
     var poolingInterval = setInterval(function () {
-      console.debug('[VA] popup: %o', this$1.popup);
+      console.group('[VA] Popup Poll Loop');
+      console.debug('the popup: %o', this$1.popup);
 
       if (!this$1.popup || this$1.popup.closed || this$1.popup.closed === undefined) {
         clearInterval(poolingInterval);
         poolingInterval = null;
+        console.debug('popup is closed, throw error');
         reject(new Error('Auth popup window closed'));
       }
 
       try {
         var popupWindowPath = getFullUrlPath(this$1.popup.location);
-        console.debug('[VA] popupWindowPath: %o', popupWindowPath);
+        console.debug('current popupWindowPath: %o', popupWindowPath);
 
         if (popupWindowPath === redirectUriPath) {
-          console.debug('[VA] popup path and redirect path are the same');
+          console.debug('popup path and redirect path are the same');
 
           if (this$1.popup.location.search || this$1.popup.location.hash) {
             var query = parseQueryString(this$1.popup.location.search.substring(1).replace(/\/$/, ''));
@@ -991,15 +993,16 @@ OAuthPopup.prototype.pooling = function pooling (redirectUri) {
           clearInterval(poolingInterval);
           poolingInterval = null;
 
-          console.debug('[VA] popup closing');
+          console.debug('popup closing');
           this$1.popup.close();
         } else {
-          console.debug('[VA] poll loop else');
+          console.debug('else block');
         }
       } catch(e) {
-        console.debug('[VA] poll catch');
+        console.debug('ignored catch block');
         // Ignore DOMException: Blocked a frame with origin from accessing a cross-origin frame.
       }
+      console.groupEnd();
     }, 250);
   })
 };

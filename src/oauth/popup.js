@@ -65,20 +65,22 @@ export default class OAuthPopup {
       console.debug('[VA] redirectUriPath: %o | %o', redirectUriPath, redirectUri)
 
       let poolingInterval = setInterval(() => {
-        console.debug('[VA] popup: %o', this.popup)
+        console.group('[VA] Popup Poll Loop')
+        console.debug('the popup: %o', this.popup)
 
         if (!this.popup || this.popup.closed || this.popup.closed === undefined) {
           clearInterval(poolingInterval)
           poolingInterval = null
+          console.debug('popup is closed, throw error')
           reject(new Error('Auth popup window closed'))
         }
 
         try {
           const popupWindowPath = getFullUrlPath(this.popup.location)
-          console.debug('[VA] popupWindowPath: %o', popupWindowPath)
+          console.debug('current popupWindowPath: %o', popupWindowPath)
 
           if (popupWindowPath === redirectUriPath) {
-            console.debug('[VA] popup path and redirect path are the same')
+            console.debug('popup path and redirect path are the same')
 
             if (this.popup.location.search || this.popup.location.hash) {
               const query = parseQueryString(this.popup.location.search.substring(1).replace(/\/$/, ''));
@@ -98,15 +100,16 @@ export default class OAuthPopup {
             clearInterval(poolingInterval)
             poolingInterval = null
 
-            console.debug('[VA] popup closing')
+            console.debug('popup closing')
             this.popup.close()
           } else {
-            console.debug('[VA] poll loop else')
+            console.debug('else block')
           }
         } catch(e) {
-          console.debug('[VA] poll catch')
+          console.debug('ignored catch block')
           // Ignore DOMException: Blocked a frame with origin from accessing a cross-origin frame.
         }
+        console.groupEnd()
       }, 250)
     })
   }

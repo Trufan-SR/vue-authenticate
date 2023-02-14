@@ -927,6 +927,9 @@ OAuthPopup.prototype.open = function open (redirectUri, skipPooling) {
       }
     } else {
       this.popup = window.open(this.url, this.name, this._stringifyOptions());
+      this.popup.window.addEventListener('beforeunload', function () {
+        console.debug('-- popup beforeunload');
+      });
     }
 
     if (this.popup && this.popup.focus) {
@@ -1342,6 +1345,7 @@ var VueAuthenticate = function VueAuthenticate($http, overrideOptions) {
  */
 VueAuthenticate.prototype.isAuthenticated = function isAuthenticated () {
   var token = this.storage.getItem(this.tokenName);
+  console.debug('[VA] isAuthenticated - token: %o | name: %o', token, this.tokenName);
 
   if (token) {// Token is present
     if (token.split('.').length === 3) {// Token with a valid JWT format XXX.YYY.ZZZ
@@ -1377,7 +1381,7 @@ VueAuthenticate.prototype.setToken = function setToken (response) {
   if (response[this.options.responseDataKey]) {
     response = response[this.options.responseDataKey];
   }
-    
+
   var token;
   if (response.access_token) {
     if (isObject(response.access_token) && isObject(response.access_token[this.options.responseDataKey])) {
@@ -1407,7 +1411,7 @@ VueAuthenticate.prototype.getPayload = function getPayload () {
     } catch (e) {}
   }
 };
-  
+
 /**
  * Login user using email and password
  * @param{Object} user         User data
@@ -1481,7 +1485,7 @@ VueAuthenticate.prototype.logout = function logout (requestOptions) {
 
 /**
  * Authenticate user using authentication provider
- * 
+ *
  * @param{String} provider     Provider name
  * @param{Object} userData     User data
  * @param{Object} requestOptions Request options

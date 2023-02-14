@@ -60,6 +60,7 @@ export default class VueAuthenticate {
    */
   isAuthenticated() {
     let token = this.storage.getItem(this.tokenName)
+    console.debug('[VA] isAuthenticated - token: %o | name: %o', token, this.tokenName)
 
     if (token) {  // Token is present
       if (token.split('.').length === 3) {  // Token with a valid JWT format XXX.YYY.ZZZ
@@ -95,7 +96,7 @@ export default class VueAuthenticate {
     if (response[this.options.responseDataKey]) {
       response = response[this.options.responseDataKey];
     }
-    
+
     let token;
     if (response.access_token) {
       if (isObject(response.access_token) && isObject(response.access_token[this.options.responseDataKey])) {
@@ -125,7 +126,7 @@ export default class VueAuthenticate {
       } catch (e) {}
     }
   }
-  
+
   /**
    * Login user using email and password
    * @param  {Object} user           User data
@@ -193,7 +194,7 @@ export default class VueAuthenticate {
 
   /**
    * Authenticate user using authentication provider
-   * 
+   *
    * @param  {String} provider       Provider name
    * @param  {Object} userData       User data
    * @param  {Object} requestOptions Request options

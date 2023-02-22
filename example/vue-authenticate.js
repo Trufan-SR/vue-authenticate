@@ -617,7 +617,7 @@ var defaultOptions = {
     twitter: {
       name: 'twitter',
       url: '/auth/twitter',
-      authorizationEndpoint: 'https://api.twitter.com/oauth/authenticate',
+      authorizationEndpoint: 'https://api.twitter.com/oauth/authorize',
       redirectUri: window.location.origin,
       oauthType: '1.0',
       popupOptions: { width: 495, height: 645 }
